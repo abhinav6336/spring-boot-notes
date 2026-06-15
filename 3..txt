@@ -1,115 +1,217 @@
-Request Parameters: They are also used for reading value through API.
+# Spring Boot Database and API Notes
 
+## Request Parameters
+
+Request parameters are used for reading values through an API using the `@RequestParam` annotation.
+
+### Example
+
+```java
 @GetMapping("/sayhello")
-	public String sayhello(@RequestParam String name,@RequestParam String course)
-	{
-		String msg="Hello "+name+"<br>";
-		msg+="Your Course is "+course;
-		return msg;
-	}
+public String sayhello(@RequestParam String name, @RequestParam String course) {
+	String msg = "Hello " + name + "<br>";
+	msg += "Your Course is " + course;
+	return msg;
+}
+```
 
-for calling syntax
+### Calling Syntax
 
-	http://localhost:8888/apiname?var1=value&var2=value&.....
+```
+http://localhost:8888/apiname?var1=value&var2=value&...
+```
 
-example
+### Example URL
+
+```
 http://localhost:8888/sayhello?name=Dhananjay&course=PhD
+```
 
-____________________________________________________________________________
+---
 
-Working With Database
-	1. MySQL
-	2. MongoDB
+## Working With Database
 
-MySQL
-	1. It is a relational database management application
-	2. Use SQL for interaction
-	3. It is lightweight and open source application
-	
-SQL Command
-1. DDL(Data Definition Language)
-2. DML(Data manipulation Language)
-3. TCL(Transaction Control Language)
-4. DCL (Data Control Language)
-5. DQL (Data Query Language)
+### Supported Databases
+1. MySQL
+2. MongoDB
 
+### MySQL Overview
+- Relational database management application
+- Uses SQL for interaction
+- Lightweight and open-source
 
-DDL Command
-1. create - creates table etc
-Syntax
-	create table tablename(fieldname datatype(size),.......................................) 
-2. alter- modify the structure of existing table
-Syntax
-	alter table tablename add columnname datatype(size)
-	alter table tablename Modify columnname datatype(size)
-	alter table tablename drop column  columnname
+---
 
-3. drop- delete the existing table.
-Syntax
-	drop table tablename
+## SQL Commands
 
-1. create the below table
-emp
-	empid number (5)
-	ename varchar (40)
-	edesig varchar(60)
-	salary number (10,2)
-2. increase the size of the name field that is 80
-3. add a new column named as phone_no varchar(10)
+### Categories
 
+1. **DDL** (Data Definition Language)
+2. **DML** (Data Manipulation Language)
+3. **TCL** (Transaction Control Language)
+4. **DCL** (Data Control Language)
+5. **DQL** (Data Query Language)
 
+---
+
+## DDL Commands
+
+### 1. CREATE - Creates tables
+
+**Syntax:**
+```sql
+CREATE TABLE tablename(fieldname datatype(size), ...);
+```
+
+### 2. ALTER - Modify the structure of existing table
+
+**Syntax:**
+```sql
+ALTER TABLE tablename ADD columnname datatype(size);
+ALTER TABLE tablename MODIFY columnname datatype(size);
+ALTER TABLE tablename DROP COLUMN columnname;
+```
+
+### 3. DROP - Delete the existing table
+
+**Syntax:**
+```sql
+DROP TABLE tablename;
+```
+
+### Practice Problem
+
+1. Create the following table:
+   - Table: `emp`
+   - Columns:
+     - empid number(5)
+     - ename varchar(40)
+     - edesig varchar(60)
+     - salary number(10,2)
+2. Increase the size of the name field to 80
+3. Add a new column named `phone_no` varchar(10)
+
+### Example Commands
+
+```sql
+-- Access phpMyAdmin
 http://localhost/phpmyadmin
 
-create database st2026
-use st2026
-create table emp(empid numeric(5) primary key,ename varchar(40), edesig varchar(60),salary numeric(10,2)) 
-desc emp
+-- Create database and table
+CREATE DATABASE st2026;
+USE st2026;
+CREATE TABLE emp(
+  empid numeric(5) PRIMARY KEY,
+  ename varchar(40),
+  edesig varchar(60),
+  salary numeric(10,2)
+);
 
-DML - Data manipulation Language
-1. insert
-Syntax
-	a. insert into all field 
-		insert into tablename(value-1,value-2,.......)
-	b. insert into partial field
-		insert into tablename(fieldname1,fieldname2,....) values (value-1,value-2)
-2. update
-3. delete
+-- Describe table structure
+DESC emp;
+```
 
-example
-insert into emp values(101, 'Anuj Kapoor', 'Manager',120000)
-insert into emp(empid,ename) values(102,'Pankaj Singh')
-select * from emp - show all records
-Note- insert more 5 records into emp table
+---
 
-Update: update the existing record
-Syntax
-	update tablename set columnname=value [where condition]
-delete : delete the exiting record
-Syntax
-	delete from tablename  [where condition]
+## DML - Data Manipulation Language
 
-emprec
-	empid
-	ename
-	basic
-	ta	(bs*10%)
-	da    (bs*15%)
-	hra   (bs*6)
+### 1. INSERT - Add new records
 
-create table emprec(empid numeric(5) primary key,ename varchar(60), basic numeric(10),ta numeric(10),da numeric(10), hra numeric(10))
+**Syntax:**
 
-1. insert 5 records in empid,ename and basic fields only
-insert into emprec(empid, ename, basic) values(101,'Anuj',70000)
-insert into emprec(empid, ename, basic) values(102,'Alok',50000)
-insert into emprec(empid, ename, basic) values(103,'Anu',60000)
-insert into emprec(empid, ename, basic) values(104,'Amit',30000)
-insert into emprec(empid, ename, basic) values(105,'Akash',40000)
+**Insert into all fields:**
+```sql
+INSERT INTO tablename VALUES(value-1, value-2, ...);
+```
 
-2. calculate ta,da and hra using update command
-update emprec set ta=basic*10/100,da=basic*15/100,hra=basic*6/100
+**Insert into specific fields:**
+```sql
+INSERT INTO tablename(fieldname1, fieldname2, ...) VALUES(value-1, value-2, ...);
+```
 
-3. show all the records
-select * from emprec
+**Examples:**
+```sql
+INSERT INTO emp VALUES(101, 'Anuj Kapoor', 'Manager', 120000);
+INSERT INTO emp(empid, ename) VALUES(102, 'Pankaj Singh');
+```
+
+**View all records:**
+```sql
+SELECT * FROM emp;
+```
+
+> **Note:** Insert more 5 records into the emp table
+
+### 2. UPDATE - Update existing records
+
+**Syntax:**
+```sql
+UPDATE tablename SET columnname=value [WHERE condition];
+```
+
+### 3. DELETE - Delete existing records
+
+**Syntax:**
+```sql
+DELETE FROM tablename [WHERE condition];
+```
+
+---
+
+## Practice: Employee Records (EMPREC)
+
+### Table Structure
+
+| Field | Type | Description |
+|-------|------|-------------|
+| empid | numeric(5) | Employee ID (Primary Key) |
+| ename | varchar(60) | Employee Name |
+| basic | numeric(10) | Basic Salary |
+| ta | numeric(10) | Travel Allowance (10% of basic) |
+| da | numeric(10) | Dearness Allowance (15% of basic) |
+| hra | numeric(10) | House Rent Allowance (6% of basic) |
+
+### Create Table
+
+```sql
+CREATE TABLE emprec(
+  empid numeric(5) PRIMARY KEY,
+  ename varchar(60),
+  basic numeric(10),
+  ta numeric(10),
+  da numeric(10),
+  hra numeric(10)
+);
+```
+
+### Step 1: Insert 5 records
+
+Insert records with empid, ename, and basic fields only:
+
+```sql
+INSERT INTO emprec(empid, ename, basic) VALUES(101, 'Anuj', 70000);
+INSERT INTO emprec(empid, ename, basic) VALUES(102, 'Alok', 50000);
+INSERT INTO emprec(empid, ename, basic) VALUES(103, 'Anu', 60000);
+INSERT INTO emprec(empid, ename, basic) VALUES(104, 'Amit', 30000);
+INSERT INTO emprec(empid, ename, basic) VALUES(105, 'Akash', 40000);
+```
+
+### Step 2: Calculate Allowances
+
+Use UPDATE command to calculate ta, da, and hra:
+
+```sql
+UPDATE emprec SET 
+  ta = basic * 10 / 100,
+  da = basic * 15 / 100,
+  hra = basic * 6 / 100;
+```
+
+### Step 3: View All Records
+
+```sql
+SELECT * FROM emprec;
+```
 
 
 
