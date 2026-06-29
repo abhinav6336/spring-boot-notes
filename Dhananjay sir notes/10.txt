@@ -1,0 +1,133 @@
+Create a table named as usrs which contains the following fields.
+usrs
+	uname
+	passwd
+	role
+and insert following records into it-
+
+uname	passwd		role
+admin	admin		admin
+manager	manager		manager
+staff 	staff 		staff
+
+now create a login window, like the following-
+
+User Name	TextField
+Password	TextField
+			Button(Login)
+
+if the user is admin then go admin page, if manager then go manager page and if staff then go staff page.
+
+Solution
+
+create table usrs(uname varchar(40) primary key,passwd varchar(40) not null, role varchar(30) not null)
+
+insert into usrs values('admin','admin','admin')
+insert into usrs values('manager','manager','manager')
+insert into usrs values('staff','staff','staff')
+
+______________________________________________________________
+
+User Check
+
+package com.training.Controller;
+
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.training.Entity.usrs;
+import com.training.Service.UsrsService;
+
+@Controller
+public class AppController {
+
+	@Autowired
+	UsrsService usrsserv;
+	@GetMapping("/")
+	public String index()
+	{
+		return "frmlogin.html";
+	}
+	
+	@PostMapping("/loginres")
+	public String loginres(@RequestParam String txtun,@RequestParam String txtpw)
+	{
+		Optional<usrs> records=usrsserv.searchdata(txtun);
+		usrs usr=records.get();
+		if(records.isPresent())
+		{
+			if(usr.getPasswd().equals(txtpw) && usr.getRole().equals("admin"))
+				return "/admin/admin_home";
+			else if(usr.getPasswd().equals(txtpw) && usr.getRole().equals("manager"))
+				return "/manager/manager_home";
+			else if(usr.getPasswd().equals(txtpw) && usr.getRole().equals("staff"))
+				return "/staff/staff_home";
+		}
+		return "frmlogin";
+	}
+}
+
+______________________________________________________________________________
+
+for style we can all types of stylesheet
+	1. inline stylesheet
+	2. <style> tag
+	3. css
+place css inside static>>css
+
+pagestyle.css
+
+.header
+{
+	font-family: impact;
+	color: maroon;
+	font-size: 35px;
+	text-align: center;
+}
+
+used on admin_home.html
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<link rel="stylesheet" th:href="@{/css/pagestyle.css}" type="text/css" />
+	</head>
+	<body>
+		<h1 class="header">Admin Home</h1>
+	</body>
+</html>
+
+using a common file for bootstrap
+
+<html xmlns:th="http://www.thymeleaf.org">
+	<head th:fragment="bootstrap_links">
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>			
+	</head>
+</html>
+
+frmlogin.html
+<html xmlns:th="http://thymeleaf.org">
+	<head  th:replace="~{fragments\common::bootstrap_links}">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+				<form method="post" th:action="@{/loginres}">
+					User Name <input type="text" name="txtun" class="form-control" /><br/>
+					Password <input type="password" name="txtpw" class="form-control" /><br/>
+					<input type="submit" value="Login" name="b1" class="btn btn-primary" />
+					</form>		
+			</div>
+			<div class="col-md-3"></div>
+			</div>
+		</div>
+		
+	</body>
+</html>

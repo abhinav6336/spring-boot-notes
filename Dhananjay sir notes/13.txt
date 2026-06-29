@@ -1,0 +1,83 @@
+Paging
+
+1. mongo db insert 100 records into the collection named students
+
+2. Now create an rest api named as showrecords which show all the records through api
+
+3. The api will show all the 100 records at a time, but if we want to show only certain number of records then we can use paging.
+
+4. for implementing paging we can use the following code inside the service class.
+
+public Page<students> showdatabypage(Pageable pageable)
+	{
+		return sturepo.findAll(pageable);
+	}
+
+4. inside controller write the below code-
+
+@GetMapping("/showdatabypage/{pageno}/{pagesize}")
+	public Page<students> showdatabypage(@PathVariable int pageno,
+										 @PathVariable int pagesize)
+	{
+		Pageable pageable=PageRequest.of(pageno, pagesize);
+		return stuserv.showdatabypage(pageable);
+	}
+for calling 
+	http://localhost:8888/showdatabypage/pageno/number of records
+
+
+Paging in Thymeleaf
+
+<html th:xmlns="thymeleaf.org">
+	<head>
+		<style type="text/css">
+			div{margin:5px;padding: 5px;width:600px;background-color: chartreuse;}
+		</style>
+	</head>
+	<body>
+		<div align="center">
+		<table border="3" width="600" style="background-color: aquamarine; color: black;">
+			<tr style="background-color: yellow; color: red;"><th colspan="4"><h2>Data by Pagination</h2></th></tr>
+			<tr style="background-color: crimson; color: white;">
+			<th>Name</th>
+		
+			
+			<th>Course</th>
+			
+			
+			<th>Branch</th>
+			
+			
+			<th>Admission Year</th>
+	</tr>
+	<tr th:each="student:${studentspage}">
+		<td th:text="${student.name}"></td>
+		<td th:text="${student.course}"></td>
+		<td th:text="${student.branch}"></td>
+		<td th:text="${student.admissionYear}"></td>
+	</tr>
+	</table>
+		</div><div align="center">
+			<form th:if="${studentspage.hasPrevious()}" th:action="@{/showpaging}" method="post" style="display:inline;">
+					                <input type="hidden" name="pageno" th:value="${currentpageno - 1}"/>
+					                <input type="hidden" name="pagesize" th:value="${pagesize}"/>
+					                <input type="submit" value="&laquo; Back" style="background-color: crimson; color: white; border: 1px solid black; padding: 5px 10px; cursor: pointer;"/>
+					            </form>
+<span th:unless="${studentspage.hasPrevious()}" 
+style="padding: 5px 10px; background-color: lightgray; color: darkgray; border: 1px solid gray; cursor: not-allowed;">
+								               &laquo; Back
+								         </span>
+										 <form th:if="${studentspage.hasNext()}" th:action="@{/showpaging}" method="post" style="display:inline;">
+										 								                <input type="hidden" name="pageno" th:value="${currentpageno + 1}"/>
+										 								                <input type="hidden" name="pagesize" th:value="${pagesize}"/>
+										 								                <input type="submit" value="Next &raquo;" style="background-color: crimson; color: white; border: 1px solid black; padding: 5px 10px; cursor: pointer;"/>
+										 								            </form>
+										 											<span th:unless="${studentspage.hasNext()}" 
+										 											                 style="padding: 5px 10px; background-color: lightgray; color: darkgray; border: 1px solid gray; cursor: not-allowed;">
+										 											              Next &raquo;
+										 											           </span>
+										 
+			</div>
+												
+	</body>
+</html>
